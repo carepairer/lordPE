@@ -31,9 +31,9 @@ int main(int argc, char* argv[])
 	}
 
 	printf("MZ头 \n\
-				WORD e_magic:           %4X\n", myDosHeader.e_magic);
+				WORD e_magic 1*:           %4X\n", myDosHeader.e_magic);
 	printf("指示NT头的偏移 \n\
-				DWORD e_lfaner:         %8X\n", myDosHeader.e_lfanew);
+				DWORD e_lfaner 2*:         %8X\n", myDosHeader.e_lfanew);
 
 	e_lfanew = myDosHeader.e_lfanew;
 	//NT头部分
@@ -54,9 +54,9 @@ int main(int argc, char* argv[])
 	printf("=================================IMAGE_FILE_HEADER===========================\n");
 
 	printf("指出该PE文件运行的平台，每个CPU都有唯一的标识码，一般0x14c(x86) \n\
-			WORD Machine:                         %04X\n\n", myNTHeader.FileHeader.Machine);
+			WORD Machine 3*:                         %04X\n\n", myNTHeader.FileHeader.Machine);
 	printf("指出文件中存在的节区数量 注：这一的定义一定要等于实际的大小，不然程序会运行失败 \n\
-			WORD NumberOfSection:                 %04X\n\n", myNTHeader.FileHeader.NumberOfSections);
+			WORD NumberOfSection 4*:                 %04X\n\n", myNTHeader.FileHeader.NumberOfSections);
 	printf("PE文件的创建时间， 一般是由链接器填写UTC（世界标准时间）进行存贮， 从1970年1日00:00:00起算的秒数值 \n\
             我们可以用C语言的localtime()函数（时区也会转换）计算 \n\
 			DWORD TimeDateStamp:                  %08x\n\n", myNTHeader.FileHeader.TimeDateStamp);
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 	printf("指出PE的IMAGE_OPTIONAL_HEADER32结构体或PE+格式文件的IMAGE_OPTIONAL_HEADER64结构体的长度\n\
 			这两个结构体尺寸是不相同的，所以需要在SizeOfOptionalHeader中指明大小，通常32位：EO \n\
 			64位： F0（不是绝对的）他们只是最小值， 可能有更大的 \n\
-			WORD SizeOfOptionHeader:              %04X\n\n", myNTHeader.FileHeader.SizeOfOptionalHeader);
+			WORD SizeOfOptionHeader 5*:              %04X\n\n", myNTHeader.FileHeader.SizeOfOptionalHeader);
 	printf("标识文件的属性，文件是否可运行，是否为DLL文件等， 二进制中每一位代表不同的属性，以bit, or 形式结合起来\n\
 			2个需要记住的值 0002H： .exe文件， 2000h： .dll文件 \n\
 			WORD Characteristics:                 %04X\n\n", myNTHeader.FileHeader.Characteristics);
@@ -76,31 +76,31 @@ int main(int argc, char* argv[])
 	printf("=================================IMAGE_OPTION_HEADER========================\n");
 
 	printf("这个可选头的类型PE: 10Bh PE+: 20Bh 可以依次区分是32位还是64位 \n\
-			WORD Magic:                           %04X\n\n", myNTHeader.OptionalHeader.Magic); 
+			WORD Magic 6*:                           %04X\n\n", myNTHeader.OptionalHeader.Magic); 
 	printf("链接器的版本号（不重要） \n\
 			BYTE MajorLinkerVersion:              %02X\n\n", myNTHeader.OptionalHeader.MajorLinkerVersion);
 	printf("链接器的小版本号（不重要）\n\
 			BYTE MinorLinkerVersion:              %02X\n\n", myNTHeader.OptionalHeader.MinorLinkerVersion);
-	printf("代码段的长度 \n\
+	printf("代码段的长度  （由编译器填写 没用）\n\
 			DWORD SizeOfCode:                     %08X\n\n", myNTHeader.OptionalHeader.SizeOfCode);
-	printf("初始化的数据长度 \n\
+	printf("初始化的数据长度（由编译器填写 没用） \n\
 			DWORD SizeOfInitializedData:          %08X\n\n", myNTHeader.OptionalHeader.SizeOfInitializedData);
-	printf("未初始化的数据长度 \n\
+	printf("未初始化的数据长度（由编译器填写 没用） \n\
 			DWORD SizeOfUninitializeData:         %08X\n\n", myNTHeader.OptionalHeader.SizeOfUninitializedData);
 	printf("程序EP的RVA 指出程序最先执行代码的起始地址（很重要） \n\
-			DWORD AddressOfEntryPoint:            %08X\n\n", myNTHeader.OptionalHeader.AddressOfEntryPoint);
-	printf("代码段起始地址的RVA \n\
+			DWORD AddressOfEntryPoint 7*:            %08X\n\n", myNTHeader.OptionalHeader.AddressOfEntryPoint);
+	printf("代码段起始地址的RVA （由编译器填写 没用）\n\
 			DWORD BaseOfCode                      %08X\n\n", myNTHeader.OptionalHeader.BaseOfCode);
-	printf("数据段起始地址的RVA \n\
+	printf("数据段起始地址的RVA （由编译器填写 没用）\n\
 			DWORD BaseOfDate                      %08X\n\n", myNTHeader.OptionalHeader.BaseOfData);
 	printf("VA: 0-FFFFFFFF(32位系统)， PE文件加载到虚拟内存时， 指出文件优先装入地址\n\
 			exe, dll文件被装载到0-7FFFFFFF SYS文件载入内核内存的 80000000-FFFFFFFF  \n\
 			执行PE文件时， PE装载器会把EIP设置为 ImageBase + AddressOfEntrypoint \n\
-			DWORD ImageBase:                       %08X\n\n", myNTHeader.OptionalHeader.ImageBase);
-	printf("节对齐，节在内存中的最小单位， 一般为1000h \n\
-			DWORD SectionAlignment:               %08X\n\n", myNTHeader.OptionalHeader.SectionAlignment);
+			DWORD ImageBase 8*:                       %08X\n\n", myNTHeader.OptionalHeader.ImageBase);
+	printf("内存对齐，节在内存中的最小单位， 一般为1000h \n\
+			DWORD SectionAlignment 9*:               %08X\n\n", myNTHeader.OptionalHeader.SectionAlignment);
 	printf("文件对齐，节在磁盘文件中的最小单位， 一般为200h \n\
-			DWORD FileAlignment:                  %08X\n\n", myNTHeader.OptionalHeader.FileAlignment);
+			DWORD FileAlignment 10*:                  %08X\n\n", myNTHeader.OptionalHeader.FileAlignment);
 	printf("操作系统主版本号（不重要）\n\
 			WORD MajorOperatingSystemVersion:     %04X\n\n", myNTHeader.OptionalHeader.MajorOperatingSystemVersion);
 	printf("操作系统小版本号（不重要）\n\
@@ -116,10 +116,10 @@ int main(int argc, char* argv[])
 	printf("Win32版本值 目前看过的值都是 00 00 00 00 \n\
 			DWORD Win32VersionValue:              %08X\n\n", myNTHeader.OptionalHeader.Win32VersionValue);
 	printf("指定PE image在虚拟内存中所占空间的大小 SectionAlignment的倍数 \n\
-			DWORD SizeOfImage:                    %08X\n\n", myNTHeader.OptionalHeader.SizeOfImage);
+			DWORD SizeOfImage 11*:                    %08X\n\n", myNTHeader.OptionalHeader.SizeOfImage);
 	printf("指出整个PE头的大小（FileAlignment整数倍） 它也是从文件头的开头到第一节的原始数据的偏移量，\n\
 			可以找到第一节区 \n\
-			DWORD SizeOfHeaders:                  %08X\n\n", myNTHeader.OptionalHeader.SizeOfHeaders);
+			DWORD SizeOfHeaders 12*:                  %08X\n\n", myNTHeader.OptionalHeader.SizeOfHeaders);
 	printf("映像文件的校验和， 目的是为了防止载入无论如何都会冲突的、已损坏的二进制文件 \n\
 			DWORD CheckSum:                       %08X\n\n", myNTHeader.OptionalHeader.CheckSum);
 	printf("说明映像文件应运行于什么样的NT子系统之上,\n\
