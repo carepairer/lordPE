@@ -117,7 +117,8 @@ int main(int argc, char* argv[])
 			DWORD Win32VersionValue:              %08X\n\n", myNTHeader.OptionalHeader.Win32VersionValue);
 	printf("指定PE image在虚拟内存中所占空间的大小 SectionAlignment的倍数 \n\
 			DWORD SizeOfImage 11*:                    %08X\n\n", myNTHeader.OptionalHeader.SizeOfImage);
-	printf("指出整个PE头的大小（FileAlignment整数倍） 它也是从文件头的开头到第一节的原始数据的偏移量，\n\
+	printf("所有头(dos + pe标记 + 标准PE + 可选PE) + 节表按照文件对齐后的大小 \n\
+			(FileAlignment整数倍) 它也是从文件头的开头到第一节的原始数据的偏移量，\n\
 			可以找到第一节区 \n\
 			DWORD SizeOfHeaders 12*:                  %08X\n\n", myNTHeader.OptionalHeader.SizeOfHeaders);
 	printf("映像文件的校验和， 目的是为了防止载入无论如何都会冲突的、已损坏的二进制文件 \n\
@@ -148,7 +149,7 @@ int main(int argc, char* argv[])
 			虽然宏定义了#define IMAGE_NUMBEROF_DIRECTORY_ENTRIES16 \n\
 			但是PE装载器会通过此值来识别数组大小，说明数组大小也可能非16 \n\
 			DWORD NumberOfRvaAndSizes:            %08X\n\n", myNTHeader.OptionalHeader.NumberOfRvaAndSizes);
-	printf("此处未打印的可选头最后一个成员很重要，是一个数组，包含导出表，导入表，资源表等的描述 \n\n");
+	printf("此处未打印的可选头最后一个成员很重要即目录项 是一个数组 包含导出表，导入表，资源表等的描述 \n\n");
 	//节表目录
 	printf("==============================IMAGE_SECIION_HEADER==================\n");
 
